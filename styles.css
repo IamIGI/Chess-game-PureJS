@@ -1,0 +1,20 @@
+#gameboard {
+  width: 320px;
+  height: 320px;
+  background-color: #000;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.square {
+  height: 40px;
+  width: 40px;
+}
+
+.beige {
+  background-color: #6e6e62;
+}
+
+.brown {
+  background-color: #a92b2b;
+}

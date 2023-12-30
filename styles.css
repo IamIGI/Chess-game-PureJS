@@ -11,10 +11,24 @@
   width: 40px;
 }
 
+.square svg {
+  height: 30px;
+  width: 30px;
+  margin: 5px;
+}
+
 .beige {
   background-color: #6e6e62;
 }
 
 .brown {
   background-color: #a92b2b;
+}
+
+.black {
+  fill: #000;
+}
+
+.white {
+  fill: #fff;
 }

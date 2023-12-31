@@ -92,6 +92,9 @@ function createBoard() {
     const square = document.createElement('div');
     square.classList.add('square');
     square.innerHTML = startPiece;
+    // if square has a first child
+    square.firstChild && square.firstChild.setAttribute('draggable', true);
+
     square.setAttribute('square-id', i.toString());
 
     colorBoard(square, i);
@@ -100,3 +103,33 @@ function createBoard() {
 }
 
 createBoard();
+
+const allSquares = document.querySelectorAll('#gameboard .square');
+
+allSquares.forEach((square) => {
+  square.addEventListener('dragstart', dragStart);
+  square.addEventListener('dragover', dragOver);
+  square.addEventListener('drop', dragDrop);
+});
+
+let startPositionId;
+let draggerElement;
+
+function dragStart(e) {
+  startPositionId = e.target.parentNode.getAttribute('square-id');
+  draggedElement = e.target;
+}
+
+function dragOver(e) {
+  e.preventDefault();
+}
+
+function dragDrop(e) {
+  e.stopPropagation();
+  // this will work only if something exists in target element
+  e.target.parentNode.append(draggedElement);
+  e.target.remove(); // remove old piece
+
+  // on empty square
+  // e.target.append(draggedElement);
+}

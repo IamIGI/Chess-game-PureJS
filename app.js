@@ -2,6 +2,8 @@ const gameBoard = document.querySelector('#gameboard');
 const playerDisplay = document.querySelector('#player');
 const infoDisplay = document.querySelector('#info-display');
 const width = 8;
+let playerGo = 'black';
+playerDisplay.textContent = 'black';
 
 const startPieces = [
   rook,
@@ -104,7 +106,7 @@ function createBoard() {
 
 createBoard();
 
-const allSquares = document.querySelectorAll('#gameboard .square');
+const allSquares = document.querySelectorAll('.square');
 
 allSquares.forEach((square) => {
   square.addEventListener('dragstart', dragStart);
@@ -113,7 +115,7 @@ allSquares.forEach((square) => {
 });
 
 let startPositionId;
-let draggerElement;
+let draggedElement;
 
 function dragStart(e) {
   startPositionId = e.target.parentNode.getAttribute('square-id');
@@ -126,10 +128,74 @@ function dragOver(e) {
 
 function dragDrop(e) {
   e.stopPropagation();
-  // this will work only if something exists in target element
-  e.target.parentNode.append(draggedElement);
-  e.target.remove(); // remove old piece
 
-  // on empty square
-  // e.target.append(draggedElement);
+  const correctPlayerGo =
+    draggedElement.firstChild.classList.contains(playerGo);
+  const takenPiece = e.target.classList.contains('piece');
+  const valid = checkIfValid(e.target);
+  const opponentPlayerGo = playerGo === 'white' ? 'black' : 'white';
+  const takenPieceByOpponent =
+    e.target.firstChild?.classList.contains(opponentPlayerGo);
+
+  // correctPlayer move black piece
+  console.log(correctPlayerGo);
+  if (correctPlayerGo) {
+    if (takenPieceByOpponent && valid) {
+      e.target.parentNode.append(draggedElement);
+      e.target.remove(); // remove old piece
+      changePlayer();
+      return;
+    }
+
+    if (takenPiece && !takenPieceByOpponent) {
+      infoDisplay.textContent = 'you cannot go here!';
+      setTimeout(() => (infoDisplay.textContent = ''), 2000);
+      return;
+    }
+
+    if (valid) {
+      e.target.append(draggedElement);
+      changePlayer();
+      return;
+    }
+  }
+}
+
+function changePlayer() {
+  if (playerGo === 'black') {
+    playerGo = 'white';
+    reverseIds();
+    playerDisplay.textContent = 'white';
+  } else {
+    revertIds();
+    playerGo = 'black';
+    playerDisplay.textContent = 'black';
+  }
+}
+
+function reverseIds() {
+  const allSquares = document.querySelectorAll('.square');
+  allSquares.forEach((square, i) => {
+    square.setAttribute('square-id', width * width - 1 - i);
+  });
+}
+
+function revertIds() {
+  const allSquares = document.querySelectorAll('.square');
+  allSquares.forEach((square, i) => {
+    square.setAttribute('square-id', i);
+  });
+}
+
+function checkIfValid(target) {
+  const targetId =
+    Number(target.getAttribute('square-id')) ||
+    Number(target.parentNode.getAttribute('square-id'));
+
+  const startId = Number(startPositionId);
+  const piece = draggedElement.id;
+  console.log('targetId', targetId);
+  console.log('startId', startId);
+  console.log('piece', piece);
+  return true; //change later
 }

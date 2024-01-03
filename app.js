@@ -1,7 +1,7 @@
 const gameBoard = document.querySelector('#gameboard');
 const playerDisplay = document.querySelector('#player');
 const infoDisplay = document.querySelector('#info-display');
-const width = 8;
+const width = 8; //there are 8 square in row
 let playerGo = 'black';
 playerDisplay.textContent = 'black';
 
@@ -129,6 +129,9 @@ function dragOver(e) {
 function dragDrop(e) {
   e.stopPropagation();
 
+  // console.log(draggedElement);
+  // console.log(draggedElement.firstChild);
+
   const correctPlayerGo =
     draggedElement.firstChild.classList.contains(playerGo);
   const takenPiece = e.target.classList.contains('piece');
@@ -138,7 +141,7 @@ function dragDrop(e) {
     e.target.firstChild?.classList.contains(opponentPlayerGo);
 
   // correctPlayer move black piece
-  console.log(correctPlayerGo);
+  // console.log(correctPlayerGo);
   if (correctPlayerGo) {
     if (takenPieceByOpponent && valid) {
       e.target.parentNode.append(draggedElement);
@@ -194,8 +197,39 @@ function checkIfValid(target) {
 
   const startId = Number(startPositionId);
   const piece = draggedElement.id;
-  console.log('targetId', targetId);
-  console.log('startId', startId);
-  console.log('piece', piece);
-  return true; //change later
+  // console.log('targetId', targetId);
+  // console.log('startId', startId);
+  // console.log('piece', piece);
+
+  switch (piece) {
+    case 'pawn':
+      const starterRow = [8, 9, 10, 11, 12, 13, 14, 15];
+
+      //pawn moves forward
+      if (
+        (starterRow.includes(startId) && startId + width * 2 === targetId) ||
+        (startId + width === targetId &&
+          !document.querySelector(`[square-id="${startId + width}"]`)
+            .firstChild)
+      ) {
+        console.log('here');
+        return true;
+      }
+
+      //pawn moves diagonally (need opponent on square to do it)
+      if (
+        (startId + width - 1 === targetId &&
+          document.querySelector(`[square-id="${startId + width - 1}"]`)
+            .firstChild) ||
+        (startId + width + 1 === targetId &&
+          document.querySelector(`[square-id="${startId + width + 1}"]`)
+            .firstChild)
+      ) {
+        return true;
+      }
+      break;
+
+    default:
+      break;
+  }
 }

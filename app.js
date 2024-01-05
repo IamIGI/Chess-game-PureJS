@@ -201,6 +201,8 @@ function checkIfValid(target) {
   // console.log('startId', startId);
   // console.log('piece', piece);
 
+  console.log(target.classList[0]);
+
   switch (piece) {
     case 'pawn':
       const starterRow = [8, 9, 10, 11, 12, 13, 14, 15];
@@ -208,9 +210,7 @@ function checkIfValid(target) {
       //pawn moves forward
       if (
         (starterRow.includes(startId) && startId + width * 2 === targetId) ||
-        (startId + width === targetId &&
-          !document.querySelector(`[square-id="${startId + width}"]`)
-            .firstChild)
+        (startId + width === targetId && target.classList[0] === 'square')
       ) {
         console.log('here');
         return true;
@@ -218,12 +218,8 @@ function checkIfValid(target) {
 
       //pawn moves diagonally (need opponent on square to do it)
       if (
-        (startId + width - 1 === targetId &&
-          document.querySelector(`[square-id="${startId + width - 1}"]`)
-            .firstChild) ||
-        (startId + width + 1 === targetId &&
-          document.querySelector(`[square-id="${startId + width + 1}"]`)
-            .firstChild)
+        (startId + width - 1 === targetId && target.classList[0] === 'piece') ||
+        (startId + width + 1 === targetId && target.classList[0] === 'piece')
       ) {
         return true;
       }

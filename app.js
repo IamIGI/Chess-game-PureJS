@@ -146,6 +146,7 @@ function dragDrop(e) {
     if (takenPieceByOpponent && valid) {
       e.target.parentNode.append(draggedElement);
       e.target.remove(); // remove old piece
+      checkForWin();
       changePlayer();
       return;
     }
@@ -158,6 +159,7 @@ function dragDrop(e) {
 
     if (valid) {
       e.target.append(draggedElement);
+      checkForWin();
       changePlayer();
       return;
     }
@@ -197,11 +199,7 @@ function checkIfValid(target) {
 
   const startId = Number(startPositionId);
   const piece = draggedElement.id;
-  // console.log('targetId', targetId);
-  // console.log('startId', startId);
-  // console.log('piece', piece);
 
-  console.log(piece);
   switch (piece) {
     case 'pawn':
       const starterRow = [8, 9, 10, 11, 12, 13, 14, 15];
@@ -211,7 +209,6 @@ function checkIfValid(target) {
         (starterRow.includes(startId) && startId + width * 2 === targetId) ||
         (startId + width === targetId && target.classList[0] === 'square')
       ) {
-        console.log('here');
         return true;
       }
 
@@ -983,5 +980,26 @@ function checkIfValid(target) {
       break;
     default:
       break;
+  }
+}
+
+function checkForWin() {
+  const kings = Array.from(document.querySelectorAll('#king'));
+
+  function disableDrag() {
+    const allSquares = document.querySelectorAll('.square');
+    allSquares.forEach((square) =>
+      square.firstChild?.setAttribute('draggable', false)
+    );
+  }
+
+  if (!kings.some((king) => king.firstChild.classList.contains('white'))) {
+    infoDisplay.innerHTML = 'Black player win!';
+    disableDrag();
+  }
+
+  if (!kings.some((king) => king.firstChild.classList.contains('black'))) {
+    infoDisplay.innerHTML = 'White player win!';
+    disableDrag();
   }
 }
